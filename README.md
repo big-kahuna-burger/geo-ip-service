@@ -2,7 +2,9 @@
 
 [![npm][npm-image]][npm-url]
 
+TLDR
 HTTP API to look up geo information by IP. Uses [maxmind](http://maxmind.com).
+See it live here: https://bkb-geoip-service.herokuapp.com/
 
 ## Project
 
