@@ -1,0 +1,34 @@
+{
+  "name": "geo-ip-service",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node heroku.js",
+    "lint": "standard --fix",
+    "test": "cross-env NODE_ENV=test DEBUG=bkb:* nyc ava tests/index.js",
+    "report:html": "nyc report --reporter=html"
+  },
+  "keywords": [],
+  "author": "Aranđel Šarenac <arandjel.sarenac@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "ava": "^2.1.0",
+    "cross-env": "^5.2.0",
+    "nock": "^10.0.6",
+    "nyc": "^14.1.1",
+    "standard": "^12.0.1",
+    "supertest": "^4.0.2",
+    "tape": "^4.11.0"
+  },
+  "dependencies": {
+    "async-cache": "^1.1.0",
+    "concat-stream": "^2.0.0",
+    "debug": "^4.1.1",
+    "got": "^9.6.0",
+    "hyperquest": "^2.1.3",
+    "lru": "^3.1.0",
+    "maxmind": "^3.0.5",
+    "tar-fs": "^2.0.0"
+  }
+}
