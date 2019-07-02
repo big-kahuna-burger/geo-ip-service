@@ -4,5 +4,11 @@
   "repository": "https://github.com/big-kahuna-burger/geoip-service",
   "logo": "https://cdn.rawgit.com/heroku/node-js-getting-started/master/public/node.svg",
   "keywords": ["node", "express", "heroku"],
-  "image": "heroku/nodejs"
+  "image": "heroku/nodejs",
+  "success_url": "/welcome?ip=8.8.8.8",
+  "env": {
+    "MAXMIND_LICENSE_KEY": {
+      "description": "Your maxmind license key"
+    }
+  }
 }
