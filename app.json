@@ -8,7 +8,8 @@
   "success_url": "/welcome?ip=8.8.8.8",
   "env": {
     "MAXMIND_LICENSE_KEY": {
-      "description": "Your maxmind license key"
+      "description": "Your maxmind license key, if not provided, it will use an old mmdb database",
+      "required": false
     }
   }
 }
