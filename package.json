@@ -8,8 +8,7 @@
     "lint": "standard --fix",
     "test": "cross-env NODE_ENV=test DEBUG=bkb:* nyc ava tests/index.js",
     "report:html": "nyc report --reporter=html",
-    "postinstall": "node scripts/postinstall.js",
-    "publish": "np"
+    "postinstall": "node scripts/postinstall.js"
   },
   "keywords": [],
   "author": "Aranđel Šarenac <arandjel.sarenac@gmail.com>",
