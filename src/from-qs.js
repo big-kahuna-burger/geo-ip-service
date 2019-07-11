@@ -14,7 +14,7 @@ module.exports = function ({ queryStringProperty = 'ip' }) {
 }
 
 function detectIP (req, queryStringProperty) {
-  var qs = new url.URL(req.url).query
-  var ip = querystring.parse(qs)[queryStringProperty]
+  const { query } = url.parse(req.url)
+  const ip = querystring.parse(query)[queryStringProperty]
   return isIp(ip) ? ip : fromReq(req)
 }
