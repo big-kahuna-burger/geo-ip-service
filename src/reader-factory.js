@@ -1,11 +1,7 @@
 const { Reader } = require('maxmind')
 
 function createReader (buffer) {
-  try {
-    return new Reader(buffer)
-  } catch (err) {
-    throw err
-  }
+  return new Reader(buffer)
 }
 
 module.exports = createReader
