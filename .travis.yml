@@ -7,11 +7,6 @@ matrix:
       language: node_js
       node_js: stable
       script: npm run lint
-    - name: 'test - 12.0.0'
-      language: node_js
-      node_js: 12.0.0
-      script: npm test
-      after_script: npx codecov
     - name: 'test - stable'
       language: node_js
       node_js: stable
