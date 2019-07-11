@@ -1,4 +1,3 @@
-const url = require('url')
 const querystring = require('querystring')
 const isIp = require('./is-ip')
 const fromReq = require('./from-req')
