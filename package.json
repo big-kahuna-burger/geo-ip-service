@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node heroku.js",
     "lint": "standard --fix",
-    "test": "cross-env NODE_ENV=test DEBUG=bkb:* nyc ava tests/index.js",
+    "test": "ava tests/index.js",
+    "coverage": "nyc ava tests/index.js && nyc report --reporter=text-lcov > coverage.lcov",
     "report:html": "nyc report --reporter=html",
     "postinstall": "node scripts/postinstall.js",
     "snyk-protect": "snyk protect",
@@ -20,13 +21,14 @@
   "license": "ISC",
   "devDependencies": {
     "ava": "^2.2.0",
+    "codecov": "^3.5.0",
     "cross-env": "^5.2.0",
     "nock": "^10.0.6",
+    "np": "^5.0.3",
     "nyc": "^14.1.1",
+    "snyk": "^1.193.0",
     "standard": "^13.0.0",
     "supertest": "^4.0.2",
-    "snyk": "^1.193.0",
-    "np": "^5.0.3",
     "tape": "^4.11.0"
   },
   "dependencies": {

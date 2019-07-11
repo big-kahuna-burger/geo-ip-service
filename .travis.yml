@@ -10,5 +10,5 @@ matrix:
     - name: 'test - stable'
       language: node_js
       node_js: stable
-      script: npm test
+      script: npm run coverage
       after_script: npx codecov
