@@ -1,7 +1,7 @@
 # Geo IP lookup service
 
 [![Build Status](https://travis-ci.com/big-kahuna-burger/geo-ip-service.svg?branch=master)](https://travis-ci.com/big-kahuna-burger/geo-ip-service)
-[![npm][npm-image]][npm-url]
+[![npm][npm-image]](npm-url)
 
 TLDR
 HTTP API to look up geo information by IP. Uses [maxmind](http://maxmind.com).
