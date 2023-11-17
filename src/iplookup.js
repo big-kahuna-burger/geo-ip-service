@@ -1,25 +1,14 @@
-const AsyncCache = require('async-cache')
-const { dbPath } = require('./constants')
-const mmdbBuffer = require('fs').readFileSync(dbPath)
+import reader from './reader.js'
 
-const reader = require('./reader-factory')(mmdbBuffer)
-
-const cityCache = new AsyncCache({
-  load: (ip, cb) => {
+const iplookup = async (ip) => {
+  return new Promise((resolve, reject) => {
     try {
-      cb(null, reader.get(ip))
-    } catch (err) {
-      cb(err)
+      const info = reader.get(ip)
+      resolve(info)
+    } catch (error) {
+      reject(error)
     }
-  }
-})
-
-async function getIp (ip) {
-  return new Promise(resolve => {
-    cityCache.get(ip, (err, city) => {
-      resolve(err ? null : city)
-    })
   })
 }
 
-module.exports = getIp
+export default iplookup
