@@ -6,18 +6,6 @@ import { unlink } from 'fs/promises'
 import { maxMindHost, maxMindPath, fixtureTgzFile, dateFile } from '../src/constants.js'
 import { download } from '../src/download-utils.js'
 
-test('should skip download', async t => {
-  const lastModifiedDate = '1970-07-01T20:32:59.000Z'
-  const scope = nock('https://' + maxMindHost)
-    .head(maxMindPath)
-    .reply(200, {}, { 'Last-Modified': lastModifiedDate })
-
-  const { buffer } = await download()
-
-  t.falsy(buffer, 'should not return buffer')
-  scope.done()
-})
-
 test('should get tar.gz file and unpack it to disk', async t => {
   try {
     await unlink(dateFile)
@@ -36,3 +24,14 @@ test('should get tar.gz file and unpack it to disk', async t => {
   scope.done()
 })
 
+test('should skip download', async t => {
+  const lastModifiedDate = '1970-07-01T20:32:59.000Z'
+  const scope = nock('https://' + maxMindHost)
+    .head(maxMindPath)
+    .reply(200, {}, { 'Last-Modified': lastModifiedDate })
+
+  const { buffer } = await download()
+
+  t.falsy(buffer, 'should not return buffer')
+  scope.done()
+})

@@ -15,11 +15,16 @@
     "report:html": "nyc report --reporter=html",
     "postinstall": "node scripts/postinstall.js"
   },
-  "keywords": ["geoip", "maxmind", "ipinfo", "anti-fraud"],
+  "keywords": [
+    "geoip",
+    "maxmind",
+    "ipinfo",
+    "anti-fraud"
+  ],
   "author": "Aranđel Šarenac <arandjel.sarenac@gmail.com>",
   "homepage": "https://github.com/big-kahuna-burger/geo-ip-service",
   "repository": {
-    "url": "https://github.com/big-kahuna-burger/geo-ip-service"
+    "url": "git+https://github.com/big-kahuna-burger/geo-ip-service.git"
   },
   "license": "ISC",
   "devDependencies": {

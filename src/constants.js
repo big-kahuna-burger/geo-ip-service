@@ -32,8 +32,8 @@ export const fixtureTgzFile = join(
   'GeoIP2-City_20170404.tar.gz'
 )
 
-export const dbPath = join(import.meta.url, '.vendor', licenseKey ? 'GeoIP2-City.mmdb' : 'GeoLite2-City.mmdb')
-export const vendorDir = join(import.meta.url, '.vendor')
+export const dbPath = join(import.meta.url, '..', '.vendor', licenseKey ? 'GeoIP2-City.mmdb' : 'GeoLite2-City.mmdb')
+export const vendorDir = join(import.meta.url, '..', '.vendor')
 export const defaultUrl = `https://${maxMindHost}${maxMindPath}`
 export const dateFile = path.join(vendorDir, '.last-modified-time')
 export const finalDest = path.join(vendorDir, '.final.mmdb')
