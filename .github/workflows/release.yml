@@ -1,0 +1,26 @@
+name: Publish
+
+on:
+  push:
+    tags: ['v[0-9]+.[0-9]+.[0-9]+']
+
+jobs:
+  npm:
+    if: ${{ github.repository == 'big-kahuna-burger/geo-ip-service' }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+          always-auth: true
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}

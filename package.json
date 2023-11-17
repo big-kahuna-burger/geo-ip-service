@@ -4,8 +4,9 @@
   "description": "GeoIP middleware to provide ip based info leveraging maxmind Geo City databases",
   "main": "index.js",
   "files": [
+    "index.js",
     "src",
-    "index.js"
+    "scripts"
   ],
   "type": "module",
   "scripts": {
