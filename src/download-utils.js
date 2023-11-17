@@ -14,7 +14,7 @@ import {
   dbPath
 } from './constants.js'
 
-export { download, lastModifiedAtOrigin }
+export { download }
 
 async function lastModifiedAtOrigin () {
   const lm = await (new Promise((resolve, reject) => {
