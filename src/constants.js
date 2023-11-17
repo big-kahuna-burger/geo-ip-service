@@ -1,30 +1,39 @@
-const path = require('path')
-// eslint-disable-next-line
-const license_key = process.env.MAXMIND_LICENSE_KEY
-const { stringify } = require('querystring')
+import { stringify } from 'querystring'
+import { join } from 'desm'
+import path from 'path'
+
+const licenseKey = process.env.MAXMIND_LICENSE_KEY
+const liteLicenseKey = process.env.MAXMIND_LITE_LICENSE_KEY
 
 const query = stringify({
   edition_id: 'GeoIP2-City',
   suffix: 'tar.gz',
-  license_key
+  license_key: licenseKey
 })
 
-const maxMindHost = 'https://download.maxmind.com'
-const maxMindPath = `/app/geoip_download?${query}`
+const freeEdition = stringify({
+  edition_id: 'GeoLite2-City',
+  suffix: 'tar.gz',
+  license_key: liteLicenseKey
+})
 
-const fixtureTgzFile = path.join(
+export const maxMindHost = 'download.maxmind.com'
+export const maxMindPath = '/app/geoip_download?' + (licenseKey
+  ? query
+  : liteLicenseKey
+    ? freeEdition
+    : null)
+
+export const fixtureTgzFile = join(
+  import.meta.url,
+  '..',
   'tests',
   'fixtures',
-  `GeoIP2-City_20170404.tar.gz`
+  'GeoIP2-City_20170404.tar.gz'
 )
-const defaultUrl = `${maxMindHost}${maxMindPath}`
-const dbPath = path.join(__dirname, '.vendor', 'GeoIP2-City.mmdb')
 
-module.exports = {
-  vendorDir: path.join(__dirname, '.vendor'),
-  dbPath,
-  defaultUrl,
-  fixtureTgzFile,
-  maxMindHost,
-  maxMindPath
-}
+export const dbPath = join(import.meta.url, '..', '.vendor', licenseKey ? 'GeoIP2-City.mmdb' : 'GeoLite2-City.mmdb')
+export const vendorDir = join(import.meta.url, '..', '.vendor')
+export const defaultUrl = `https://${maxMindHost}${maxMindPath}`
+export const dateFile = path.join(vendorDir, '.last-modified-time')
+export const finalDest = path.join(vendorDir, '.final.mmdb')

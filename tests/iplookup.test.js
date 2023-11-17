@@ -1,9 +1,11 @@
-const test = require('ava')
+import test from 'ava'
+import { createRequire } from 'module'
+
+import iplookup from '../src/iplookup.js'
+const require = createRequire(import.meta.url)
 const fixture = require('./fixtures/city-of-8.8.8.8.json')
-const iplookup = require('../src/iplookup')
 
 test('should fetch city data given an IP', async t => {
-  t.plan(1)
   const cityInfo = await iplookup('8.8.8.8')
   t.deepEqual(cityInfo, fixture, 'info matches recorded')
 })

@@ -1,13 +1,7 @@
-/**
- *
- *
- * @param {*} opts
- * @returns
- */
-const iplookup = require('./iplookup')
-const fromQs = require('./from-qs')
+import fromQs from './from-qs.js'
+import iplookup from './iplookup.js'
 
-function middlewareFactory ({
+function getMiddleware ({
   detector = fromQs({ queryStringProperty: 'ip' }),
   reqProperty = 'cityInfo'
 } = {}) {
@@ -23,4 +17,4 @@ function middlewareFactory ({
   }
 }
 
-module.exports = middlewareFactory
+export default getMiddleware

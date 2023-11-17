@@ -1,7 +1,6 @@
-const iplookup = require('./src/iplookup')
-const middlewareFactory = require('./src/middleware-factory')
+import iplookup from './src/iplookup.js'
+import getMiddleware from './src/get-middleware.js'
+import createServer from './src/utils/server.js'
+import { download } from './src/download-utils.js'
 
-module.exports = {
-  iplookup,
-  middlewareFactory
-}
+export { iplookup, getMiddleware, createServer, download }

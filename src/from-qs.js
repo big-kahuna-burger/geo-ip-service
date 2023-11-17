@@ -1,6 +1,6 @@
-const querystring = require('querystring')
-const isIp = require('./is-ip')
-const fromReq = require('./from-req')
+import querystring from 'querystring'
+import { validate as isIp } from 'maxmind'
+import fromReq from './from-req.js'
 
 /**
  * @param {any} req http request to determine client ip from
@@ -8,7 +8,7 @@ const fromReq = require('./from-req')
  * looks for ip key in querystring and falls back to ip from request if no qs was provided
  */
 
-module.exports = function ({ queryStringProperty = 'ip' }) {
+export default function ({ queryStringProperty = 'ip' }) {
   return req => detectIP(req, queryStringProperty)
 }
 

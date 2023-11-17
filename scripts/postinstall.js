@@ -1,32 +1,24 @@
-const { fixtureTgzFile } = require('../src/constants')
-const {
-  zlibTransform,
-  tarfsWritable,
-  download
-} = require('../src/download-utils')
-const rs = require('fs').createReadStream(fixtureTgzFile)
+#!/usr/local/bin/node
+import { download } from '../src/download-utils.js'
 
-if (!process.env.MAXMIND_LICENSE_KEY) {
-  console.warn(
-    'no MAXMIND_LICENSE_KEY, make sure you add it via env vars. If you are using it on heroku, use secrets management page. In the meantime, service will still work since it will extract an older mmdb file'
-  )
-  rs.pipe(zlibTransform())
-    .pipe(tarfsWritable(() => {}))
-    .on('error', err => {
-      console.error(err.message)
-      process.exit(1)
-    })
-    .on('finish', () => {
-      console.log('Extracted old mmdb file')
-    })
-} else {
-  console.log('Key found, updating mmdb...')
-  download()
-    .then(_buffer => {
-      console.log('Mmdb updated successfully')
-    })
-    .catch(err => {
-      console.error(err.message)
-      process.exit(1)
-    })
+const { MAXMIND_LICENSE_KEY, MAXMIND_LITE_LICENSE_KEY } = process.env
+
+if (!(MAXMIND_LICENSE_KEY || MAXMIND_LITE_LICENSE_KEY)) {
+  console.warn('No MAXMIND_LICENSE_KEY or MAXMIND_LITE_LICENSE_KEY environment variables found. Db will not be updated')
+  console.warn('You can get your own license key from maxmind here: https://www.maxmind.com/en/geolite2/signup')
+  process.exit(0)
+}
+
+try {
+  const { buffer, lastModified } = await download()
+  console.info(new Date())
+  console.info(buffer
+    ? 'Mmdb binary file updated successfully!' 
+    : 'Mmdb file is up to date. No need to download a new one.')
+  
+  console.info(`Lastest version published on ${lastModified}`)
+} catch (error) {
+  console.error(error)
+} finally {
+  process.exit(0)
 }

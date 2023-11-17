@@ -1,51 +1,90 @@
-const hyperquest = require('hyperquest')
-const path = require('path')
-const concat = require('concat-stream')
-const tarfs = require('tar-fs')
-const zlib = require('zlib')
+import { writeFile, readFile, unlink } from 'fs/promises'
+import https from 'https'
+import path from 'path'
+import concat from 'concat-stream'
+import tarfs from 'tar-fs'
+import zlib from 'zlib'
 
-const { defaultUrl, vendorDir } = require('./constants')
+import {
+  maxMindHost,
+  maxMindPath,
+  vendorDir,
+  dateFile,
+  finalDest,
+  dbPath
+} from './constants.js'
 
-module.exports = { download, lastModified, zlibTransform, tarfsWritable }
+export { download }
 
-function lastModified () {
-  return new Promise((resolve, reject) => {
-    return hyperquest(defaultUrl, { method: 'HEAD' })
-      .on('response', res => resolve(new Date(res.headers['last-modified'])))
-      .on('error', reject)
-  })
+async function lastModifiedAtOrigin () {
+  const lm = await (new Promise((resolve, reject) => {
+    const req = https.request({
+      host: maxMindHost,
+      path: maxMindPath,
+      method: 'HEAD'
+    }, res => resolve(res.headers['last-modified']))
+
+    req.on('error', err => reject(err))
+    req.end()
+  }))
+  return new Date(lm)
 }
 
-function zlibTransform () {
-  return zlib.createGunzip()
+async function getLocalLastModifiedInSeconds () {
+  try {
+    const localModified = await readFile(dateFile)
+    return parseInt(localModified)
+  } catch (error) {
+    return null
+  }
 }
 
-function tarfsWritable (resolve) {
-  return tarfs.extract(vendorDir, {
-    ignore: name => path.extname(name) !== '.mmdb',
-    map: header => {
-      // debug({ header })
-      header.name = header.name.split('/')[1]
-      return header
-    },
-    mapStream: (fileStream, header) => {
-      if (path.extname(header.name) === '.mmdb') {
-        fileStream.pipe(concat(resolve))
-      }
-      return fileStream
+async function download () {
+  let lastModified
+  const localValue = await getLocalLastModifiedInSeconds()
+  const lmOrigin = await lastModifiedAtOrigin()
+  const originValueSeconds = lmOrigin.getTime()
+
+  if (localValue && localValue >= originValueSeconds) {
+    // local date value exists and it's equal with what we see at origin, no need to update here
+    // gt case is only used to ease testing this part 
+    // this should never be the case otherwise and we could test for equality and early return
+    return { lastModified: lmOrigin }
+  }
+  const buffer = await (new Promise((resolve, reject) => {
+    const onResponse = res => {
+      lastModified = res.headers['last-modified']
+      res
+        .pipe(zlib.createGunzip())
+        .pipe(tarfs.extract(
+          vendorDir, {
+            ignore: name => path.extname(name) !== '.mmdb',
+            map: header => {
+              header.name = header.name.split('/')[1]
+              return header
+            },
+            mapStream: (fileStream, header) => {
+              if (path.extname(header.name) === '.mmdb') {
+                fileStream.pipe(concat(resolve))
+              }
+              return fileStream
+            }
+          }))
     }
-  })
-}
+    const req = https.request({ host: maxMindHost, path: maxMindPath }, onResponse)
+    req.on('error', reject)
+    req.end()
+  }))
+  // all this is because we want to use maxmind.open with a watcher 
+  // so it updates reader accoringly when new db arrives
+  // problem with unpacking directly, is that zlib->tar streaming into destination is slow, 
+  // and reader will see a corrupted file, so using fs instead to copy into destination is much much faster 
+  // and allows reader watch events to find non-corrupted file on it's cycle
 
-function download () {
-  return new Promise((resolve, reject) => {
-    hyperquest(defaultUrl)
-      .on('response', res => {
-        return res
-          .pipe(zlibTransform())
-          .pipe(tarfsWritable(resolve))
-          .on('error', reject)
-      })
-      .on('error', reject)
-  })
+  await writeFile(dateFile, `${new Date(lastModified).getTime()}`) // save new date modified header file
+  await writeFile(finalDest, buffer) // overwrite file at final dest where reader is watching
+  try {
+    await unlink(dbPath) // delete maxmind named file
+  } catch (_) {} // just cleanup but ignore errors if file is not there
+  return { buffer, lastModified }
 }

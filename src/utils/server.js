@@ -1,10 +1,10 @@
-const http = require('http')
-const ipMiddleware = require('./middleware-factory')()
+import http from 'http'
+import getMiddleware from '../get-middleware.js'
 
-const server = http.createServer((req, res) => {
-  ipMiddleware(req, res, err => {
+const createServer = () => {
+  const middleware = getMiddleware()
+  const handler = async (req, res) => middleware(req, res, err => {
     if (err) {
-      console.log(err)
       res.statusCode(500)
       return res.end('Internal Server Error')
     }
@@ -12,6 +12,7 @@ const server = http.createServer((req, res) => {
     res.setHeader('Content-Type', 'application/json;charset=UTF-8')
     res.end(JSON.stringify(req.cityInfo))
   })
-})
+  return http.createServer(handler)
+}
 
-module.exports = server
+export default createServer
