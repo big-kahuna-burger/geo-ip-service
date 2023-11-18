@@ -6,9 +6,11 @@ const ipMiddleware = getMiddleware({ reqProperty: 'ipinfo' })
 
 app.use(ipMiddleware)
 
-app.get('/ipinfo', (req, res) => {
+app.use((req, res) => {
+  res.setHeader('Vercel-CDN-Cache-Control', 'max-age=3600');
+  res.setHeader('CDN-Cache-Control', 'max-age=60');
+  res.setHeader('Cache-Control', 'max-age=10');
   res.json(req.ipinfo)
 })
 
-app.listen(3000)
-console.log('Test it: http://localhost:3000/ipinfo?ip=1.1.1.1')
+app.listen(0)

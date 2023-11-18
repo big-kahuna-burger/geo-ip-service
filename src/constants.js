@@ -36,4 +36,4 @@ export const dbPath = join(import.meta.url, '..', '.vendor', licenseKey ? 'GeoIP
 export const vendorDir = join(import.meta.url, '..', '.vendor')
 export const defaultUrl = `https://${maxMindHost}${maxMindPath}`
 export const dateFile = path.join(vendorDir, '.last-modified-time')
-export const finalDest = path.join(vendorDir, '.final.mmdb')
+export const finalDest = path.join(process.cwd(), '.vendor', '.final.mmdb')
