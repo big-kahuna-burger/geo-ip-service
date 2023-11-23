@@ -1,6 +1,6 @@
 {
   "name": "geo-ip-service",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "GeoIP middleware to provide ip based info leveraging maxmind Geo City databases",
   "main": "index.js",
   "files": [
