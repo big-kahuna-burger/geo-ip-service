@@ -6,6 +6,8 @@ import { unlink } from 'fs/promises'
 import { maxMindHost, maxMindPath, fixtureTgzFile, dateFile } from '../src/constants.js'
 import { download } from '../src/download-utils.js'
 
+nock.disableNetConnect()
+
 test('should get tar.gz file and unpack it to disk', async t => {
   try {
     await unlink(dateFile)

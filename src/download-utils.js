@@ -1,3 +1,4 @@
+import { createReadStream } from 'fs'
 import { writeFile, readFile, unlink } from 'fs/promises'
 import https from 'https'
 import path from 'path'
@@ -52,24 +53,29 @@ async function download () {
     return { lastModified: lmOrigin }
   }
   const buffer = await (new Promise((resolve, reject) => {
+    let filename
     const onResponse = res => {
       lastModified = res.headers['last-modified']
       res
-        .pipe(zlib.createGunzip())
-        .pipe(tarfs.extract(
-          vendorDir, {
-            ignore: name => path.extname(name) !== '.mmdb',
-            map: header => {
-              header.name = header.name.split('/')[1]
-              return header
-            },
-            mapStream: (fileStream, header) => {
-              if (path.extname(header.name) === '.mmdb') {
-                fileStream.pipe(concat(resolve))
-              }
-              return fileStream
-            }
-          }))
+      .pipe(zlib.createGunzip())
+      .pipe(tarfs.extract(vendorDir, {
+        ignore: name => path.extname(name) !== '.mmdb',
+        map: header => {
+          header.name = header.name.split('/')[1]
+          return header
+        },
+        mapStream: (fileStream, header) => {
+          if (path.extname(header.name) === '.mmdb') {
+            filename = header.name
+          }
+          return fileStream
+        }
+      }))
+      res.on('end', () => {
+        createReadStream(path.join(vendorDir, filename))
+          .pipe(concat(resolve))
+          .on('error', reject)
+      })
     }
     const req = https.request({ host: maxMindHost, path: maxMindPath }, onResponse)
     req.on('error', reject)
